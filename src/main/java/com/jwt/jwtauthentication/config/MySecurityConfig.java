@@ -12,12 +12,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.Filter;
 
 @Configuration              // Bean Declared
 @EnableWebSecurity
 public class MySecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     // This is Important URL Define for us Url Permit or URl Private Who User is Access or CRSF Disable or what Filter
@@ -33,6 +39,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        Filter jwtFilter = null;
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Override  // Which Authentication to used or Database Authentication which are used for us
